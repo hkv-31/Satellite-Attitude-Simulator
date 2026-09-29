@@ -1,0 +1,19 @@
+{
+  "hosting": {
+    "public": "frontend",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "satellite-api",
+          "region": "asia-south1"
+        }
+      }
+    ]
+  }
+}

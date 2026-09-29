@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Satellite Attitude Control Simulator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+    button { cursor: pointer; }
+    pre { background: #f4f4f4; padding: 15px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>Satellite Attitude Control Simulator</h1>
+  <p>Enter a target and starting attitude. The Q-learning policy controls the simulated satellite.</p>
+
+  <label>Target angle</label>
+  <input id="target" type="number" value="0" min="-180" max="180">
+
+  <label>Starting angle</label>
+  <input id="start" type="number" value="45" min="-180" max="180">
+
+  <label>Starting angular velocity</label>
+  <input id="velocity" type="number" value="0" min="-10" max="10">
+
+  <button onclick="runSimulation()">Run simulation</button>
+  <pre id="output">Waiting...</pre>
+
+  <script>
+    // Replace this with your Cloud Run URL if you host the API separately.
+    const API_URL = "https://YOUR-CLOUD-RUN-URL";
+
+    async function runSimulation() {
+      const payload = {
+        target_angle: Number(document.getElementById("target").value),
+        start_angle: Number(document.getElementById("start").value),
+        start_angular_velocity: Number(document.getElementById("velocity").value),
+        max_steps: 100
+      };
+
+      const output = document.getElementById("output");
+      output.textContent = "Running...";
+
+      try {
+        const response = await fetch(API_URL + "/simulate", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        output.textContent = JSON.stringify(await response.json(), null, 2);
+      } catch (error) {
+        output.textContent = "Request failed: " + error;
+      }
+    }
+  </script>
+</body>
+</html>
