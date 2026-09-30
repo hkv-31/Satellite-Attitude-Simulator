@@ -6,10 +6,22 @@ from .config import MODEL_PATH, MAX_STEPS_DEFAULT
 from .environment import SatelliteEnv
 from .q_learning import load_q_table
 from .storage import save_simulation
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="Satellite Attitude Control Simulator",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5500",
+        "https://satellite-attitude-sim.web.app", 
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 Q_TABLE = load_q_table(MODEL_PATH)
